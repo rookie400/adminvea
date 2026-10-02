@@ -4,7 +4,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>VEA Chat Admin</title>
+
+<title>VEA Admin Chat</title>
 
 <style>
 *{
@@ -18,341 +19,541 @@ html,body{
     width:100%;
     height:100%;
     overflow:hidden;
-    font-family:Arial,sans-serif;
-    background:#eef1f3;
+    font-family:Arial,Helvetica,sans-serif;
+    background:#f1f5f7;
 }
 
-.app{
-    width:100%;
-    height:100%;
+body{
     display:flex;
     flex-direction:column;
 }
 
-.header{
-    height:60px;
-    min-height:60px;
-    background:#126b35;
+/* =========================
+   HEADER
+========================= */
+
+.topbar{
+    height:64px;
+    flex-shrink:0;
+    background:#087f3e;
     color:white;
     display:flex;
     align-items:center;
-    padding:0 18px;
-    font-weight:bold;
+    justify-content:space-between;
+    padding:0 20px;
+    box-shadow:0 2px 8px rgba(0,0,0,.15);
+    z-index:20;
 }
 
-.header-title{
+.brand{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    font-weight:bold;
     font-size:20px;
 }
 
-.admin-name{
-    margin-left:auto;
-    font-size:13px;
-    font-weight:normal;
+.brand-icon{
+    width:38px;
+    height:38px;
+    border-radius:50%;
+    background:white;
+    color:#087f3e;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:bold;
+    font-size:16px;
 }
+
+.admin-info{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size:14px;
+}
+
+.admin-name{
+    font-weight:bold;
+}
+
+.logout-btn{
+    border:1px solid rgba(255,255,255,.7);
+    background:transparent;
+    color:white;
+    border-radius:7px;
+    padding:8px 12px;
+    cursor:pointer;
+}
+
+.logout-btn:hover{
+    background:rgba(255,255,255,.15);
+}
+
+/* =========================
+   MAIN
+========================= */
 
 .main{
     flex:1;
     min-height:0;
     display:flex;
+    position:relative;
 }
+
+/* =========================
+   CLIENT LIST
+========================= */
 
 .clients{
     width:300px;
-    min-width:300px;
+    flex-shrink:0;
     background:white;
-    border-right:1px solid #ddd;
+    border-right:1px solid #d8dee3;
+    display:flex;
+    flex-direction:column;
+    z-index:5;
+}
+
+.clients-title{
+    height:58px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 16px;
+    border-bottom:1px solid #e1e5e8;
+    font-weight:bold;
+    color:#14532d;
+}
+
+.client-count{
+    min-width:26px;
+    height:26px;
+    padding:0 7px;
+    border-radius:20px;
+    background:#e8f5ed;
+    color:#087f3e;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:12px;
+}
+
+.client-list{
+    flex:1;
+    min-height:0;
     overflow-y:auto;
 }
 
 .client-item{
-    padding:14px;
-    border-bottom:1px solid #eee;
-    cursor:pointer;
     position:relative;
+    padding:14px 14px;
+    border-bottom:1px solid #edf0f2;
+    cursor:pointer;
+    transition:.15s;
 }
 
 .client-item:hover{
-    background:#f5f5f5;
+    background:#f3faf6;
 }
 
 .client-item.active{
-    background:#e7f4eb;
+    background:#e8f5ed;
+    border-left:4px solid #087f3e;
+    padding-left:10px;
+}
+
+.client-name-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    min-width:0;
 }
 
 .client-name{
     font-weight:bold;
-    color:#222;
-    padding-right:30px;
+    color:#1e293b;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
 }
 
-.client-status{
-    font-size:11px;
-    margin-top:4px;
-    color:#777;
+.status-dot{
+    width:9px;
+    height:9px;
+    border-radius:50%;
+    flex-shrink:0;
 }
 
-.online{
-    color:#159447;
+.status-dot.online{
+    background:#16a34a;
+}
+
+.status-dot.offline{
+    background:#94a3b8;
+}
+
+.client-preview{
+    margin-top:5px;
+    color:#64748b;
+    font-size:12px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    padding-right:28px;
 }
 
 .unread{
     position:absolute;
     right:12px;
-    top:14px;
-    background:#d71920;
+    top:50%;
+    transform:translateY(-50%);
+    min-width:22px;
+    height:22px;
+    padding:0 6px;
+    border-radius:20px;
+    background:#ef4444;
     color:white;
-    min-width:20px;
-    height:20px;
-    padding:0 5px;
-    border-radius:10px;
-    text-align:center;
-    line-height:20px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
     font-size:11px;
+    font-weight:bold;
 }
+
+/* =========================
+   CHAT PANEL
+========================= */
 
 .chat-panel{
     flex:1;
     min-width:0;
     display:flex;
     flex-direction:column;
+    background:#f7f9fa;
+    position:relative;
 }
 
 .chat-header{
-    height:55px;
-    min-height:55px;
+    height:64px;
+    flex-shrink:0;
     background:white;
-    border-bottom:1px solid #ddd;
-    padding:0 15px;
+    border-bottom:1px solid #dce2e6;
     display:flex;
     align-items:center;
+    gap:12px;
+    padding:0 18px;
+    z-index:2;
+}
+
+.chat-header-info{
+    min-width:0;
+}
+
+.chat-header-name{
+    font-size:17px;
+    font-weight:bold;
+    color:#14532d;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.chat-header-status{
+    margin-top:3px;
+    font-size:12px;
+    color:#64748b;
 }
 
 .back-btn{
     display:none;
     border:0;
-    background:#126b35;
+    background:#087f3e;
     color:white;
-    height:36px;
-    padding:0 12px;
     border-radius:7px;
-    margin-right:10px;
-    font-size:14px;
+    padding:9px 12px;
     font-weight:bold;
+    cursor:pointer;
+    flex-shrink:0;
 }
 
-.selected-name{
-    font-weight:bold;
-    overflow:hidden;
-    text-overflow:ellipsis;
-    white-space:nowrap;
-}
-
-.delete-chat{
+.delete-btn{
     margin-left:auto;
     border:0;
-    background:#d71920;
+    background:#dc2626;
     color:white;
-    padding:9px 13px;
     border-radius:7px;
+    padding:9px 12px;
+    font-weight:bold;
     cursor:pointer;
-    white-space:nowrap;
+    flex-shrink:0;
 }
 
-.chat{
+.delete-btn:hover{
+    background:#b91c1c;
+}
+
+/* =========================
+   MESSAGES
+========================= */
+
+.messages{
     flex:1;
     min-height:0;
     overflow-y:auto;
-    padding:15px;
-}
-
-.message{
+    padding:18px;
     display:flex;
-    margin:8px 0;
+    flex-direction:column;
+    gap:10px;
 }
 
-.message.admin{
-    justify-content:flex-end;
+.empty-chat{
+    flex:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    color:#94a3b8;
+    font-size:14px;
 }
 
-.message.client,
-.message.bot{
+.message-row{
+    display:flex;
+    width:100%;
+}
+
+.message-row.client{
     justify-content:flex-start;
 }
 
-.bubble{
-    max-width:75%;
-    background:white;
+.message-row.admin{
+    justify-content:flex-end;
+}
+
+.message{
+    max-width:min(75%,650px);
     padding:10px 13px;
-    border-radius:15px;
-    border:1px solid #ddd;
-    line-height:1.4;
+    border-radius:12px;
+    font-size:14px;
+    line-height:1.45;
     word-wrap:break-word;
+    overflow-wrap:anywhere;
 }
 
-.admin .bubble{
-    background:#126b35;
+/* CLIENT MESSAGE - LIGHT BLUE */
+.message.client{
+    background:#dff3ff;
+    color:#123;
+    border:1px solid #b9e5f7;
+    border-left:4px solid #2196f3;
+    border-top-left-radius:4px;
+}
+
+/* ADMIN MESSAGE */
+.message.admin{
+    background:#087f3e;
     color:white;
-    border:0;
-    border-bottom-right-radius:4px;
+    border-top-right-radius:4px;
 }
 
-.client .bubble,
-.bot .bubble{
-    border-bottom-left-radius:4px;
-}
-
-.sender{
-    font-size:11px;
-    font-weight:bold;
-    margin-bottom:4px;
-    opacity:.7;
-}
-
-.chat-image{
-    max-width:100%;
-    max-height:350px;
-    display:block;
-    border-radius:10px;
-    cursor:pointer;
-}
-
-.time{
-    font-size:10px;
-    opacity:.55;
+.message-meta{
     margin-top:5px;
-    text-align:right;
+    font-size:10px;
+    opacity:.65;
 }
 
-.input-area{
-    min-height:65px;
+.image-message{
+    padding:6px;
+    background:white !important;
+    border:1px solid #d7dde1 !important;
+}
+
+.image-message img{
+    display:block;
+    max-width:300px;
+    max-height:300px;
+    width:auto;
+    height:auto;
+    border-radius:8px;
+    object-fit:contain;
+}
+
+.photo-status{
+    padding:8px 10px;
+    color:#64748b;
+    font-size:12px;
+    background:#f1f5f9;
+    border-radius:7px;
+}
+
+/* =========================
+   INPUT
+========================= */
+
+.chat-input-area{
+    flex-shrink:0;
     background:white;
-    border-top:1px solid #ddd;
-    padding:8px;
+    border-top:1px solid #dce2e6;
+    padding:10px;
     display:flex;
     gap:8px;
-    align-items:center;
+    align-items:flex-end;
 }
 
-.input-area input[type=text]{
+.message-input{
     flex:1;
-    height:48px;
-    border:1px solid #ccc;
-    border-radius:24px;
-    padding:0 16px;
-    font-size:15px;
+    min-width:0;
+    min-height:42px;
+    max-height:120px;
+    resize:none;
+    border:1px solid #cbd5e1;
+    border-radius:9px;
+    padding:11px 12px;
+    font-family:Arial,Helvetica,sans-serif;
+    font-size:14px;
     outline:none;
 }
 
-.file-btn{
-    width:48px;
-    height:48px;
-    min-width:48px;
-    border-radius:50%;
-    background:#126b35;
-    color:white;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    font-size:21px;
-    cursor:pointer;
+.message-input:focus{
+    border-color:#087f3e;
+    box-shadow:0 0 0 2px rgba(8,127,62,.08);
 }
 
-#imageInput{
-    display:none;
+.file-btn{
+    width:42px;
+    height:42px;
+    border:0;
+    border-radius:9px;
+    background:#e8f5ed;
+    color:#087f3e;
+    font-size:20px;
+    cursor:pointer;
+    flex-shrink:0;
 }
 
 .send-btn{
-    width:48px;
-    height:48px;
-    min-width:48px;
+    height:42px;
+    padding:0 17px;
     border:0;
-    border-radius:50%;
-    background:#126b35;
+    border-radius:9px;
+    background:#087f3e;
     color:white;
-    font-size:20px;
+    font-weight:bold;
     cursor:pointer;
+    flex-shrink:0;
 }
 
-.login{
+.send-btn:hover,
+.file-btn:hover{
+    opacity:.9;
+}
+
+.file-input{
+    display:none;
+}
+
+.upload-status{
+    position:absolute;
+    left:50%;
+    bottom:70px;
+    transform:translateX(-50%);
+    background:rgba(0,0,0,.78);
+    color:white;
+    padding:8px 13px;
+    border-radius:8px;
+    font-size:12px;
+    display:none;
+    z-index:10;
+}
+
+/* =========================
+   LOGIN
+========================= */
+
+.login-overlay{
     position:fixed;
     inset:0;
-    background:white;
-    z-index:100;
+    background:rgba(0,0,0,.55);
     display:flex;
     align-items:center;
     justify-content:center;
-    padding:20px;
+    z-index:100;
 }
 
 .login-box{
-    width:100%;
-    max-width:400px;
+    width:min(92%,380px);
+    background:white;
+    border-radius:14px;
+    padding:25px;
+    box-shadow:0 15px 45px rgba(0,0,0,.25);
 }
 
 .login-box h2{
-    color:#126b35;
-    text-align:center;
+    margin:0 0 8px;
+    color:#087f3e;
 }
 
-.login-box input{
-    width:100%;
-    height:50px;
-    border:1px solid #ccc;
-    border-radius:9px;
-    padding:0 15px;
-    font-size:16px;
+.login-box p{
+    margin:0 0 18px;
+    color:#64748b;
+    font-size:14px;
 }
 
-.login-box button{
+.login-input{
     width:100%;
-    height:50px;
+    height:45px;
+    border:1px solid #cbd5e1;
+    border-radius:8px;
+    padding:0 12px;
+    outline:none;
+    font-size:14px;
+}
+
+.login-input:focus{
+    border-color:#087f3e;
+}
+
+.login-submit{
+    width:100%;
+    height:45px;
     margin-top:12px;
     border:0;
-    border-radius:9px;
-    background:#126b35;
+    border-radius:8px;
+    background:#087f3e;
     color:white;
     font-weight:bold;
+    cursor:pointer;
 }
 
-.empty{
-    height:100%;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    color:#777;
-    text-align:center;
-}
-
-.hidden{
-    display:none!important;
-}
-
-.progress{
-    position:fixed;
-    left:0;
-    top:0;
-    height:3px;
-    width:0;
-    background:#fff;
-    z-index:200;
-}
-
-
-/* =========================================
-   MOBILE CHAT MODE
-========================================= */
+/* =========================
+   MOBILE
+========================= */
 
 @media(max-width:700px){
 
-    .header{
+    .topbar{
+        height:58px;
         padding:0 12px;
     }
 
-    .header-title{
-        font-size:17px;
+    .brand{
+        font-size:16px;
+        gap:8px;
     }
 
-    .admin-name{
+    .brand-icon{
+        width:32px;
+        height:32px;
+        font-size:13px;
+    }
+
+    .admin-info{
+        font-size:12px;
+        gap:6px;
+    }
+
+    .logout-btn{
+        padding:7px 9px;
         font-size:11px;
     }
 
@@ -362,8 +563,11 @@ html,body{
 
     .clients{
         width:100%;
-        min-width:100%;
         border-right:0;
+    }
+
+    .clients-title{
+        height:54px;
     }
 
     .chat-panel{
@@ -371,9 +575,8 @@ html,body{
         inset:0;
         width:100%;
         height:100%;
-        background:#f5f7f8;
-        z-index:10;
         display:none;
+        z-index:10;
     }
 
     .chat-panel.mobile-open{
@@ -385,63 +588,68 @@ html,body{
     }
 
     .chat-header{
-        padding:0 8px;
+        height:58px;
+        padding:0 10px;
+        gap:8px;
     }
 
-    .selected-name{
-        flex:1;
-        min-width:0;
+    .chat-header-name{
         font-size:15px;
     }
 
-    .delete-chat{
+    .delete-btn{
         padding:8px 9px;
         font-size:11px;
     }
 
-    .chat{
-        padding:10px;
+    .messages{
+        padding:12px;
     }
 
-    .bubble{
+    .message{
         max-width:88%;
-    }
-
-    .input-area{
-        min-height:65px;
-        padding:7px;
-    }
-
-    .input-area input[type=text]{
-        min-width:0;
         font-size:14px;
+    }
+
+    .image-message img{
+        max-width:250px;
+        max-height:250px;
+    }
+
+    .chat-input-area{
+        padding:8px;
+        gap:6px;
+    }
+
+    .message-input{
+        min-height:42px;
+        font-size:14px;
+    }
+
+    .send-btn{
+        padding:0 13px;
     }
 
 }
 
+/* VERY SMALL SCREEN */
 
-/* =========================================
-   SMALL MOBILE
-========================================= */
-
-@media(max-width:400px){
-
-    .header-title{
-        font-size:15px;
-    }
+@media(max-width:380px){
 
     .admin-name{
-        font-size:10px;
+        display:none;
     }
 
-    .delete-chat{
-        font-size:10px;
-        padding:7px;
+    .message{
+        max-width:92%;
     }
 
-    .back-btn{
-        padding:0 9px;
-        font-size:12px;
+    .file-btn{
+        width:38px;
+    }
+
+    .send-btn{
+        padding:0 10px;
     }
 
 }
@@ -451,127 +659,145 @@ html,body{
 
 <body>
 
-<div id="progress" class="progress"></div>
-
-<div id="login" class="login">
-    <div class="login-box">
-        <h2>VEA ADMIN CHAT</h2>
+<div class="topbar">
 
 
-    <input
-        id="adminNameInput"
-        type="text"
-        maxlength="50"
-        placeholder="Enter admin name"
-    >
+<div class="brand">
+    <div class="brand-icon">VEA</div>
+    <div>VEA ADMIN CHAT</div>
+</div>
 
-    <button id="loginBtn">
-        ENTER CHAT
-    </button>
+<div class="admin-info">
+    <span>Admin:</span>
+    <span class="admin-name" id="adminNameDisplay">Admin</span>
+    <button class="logout-btn" id="logoutBtn">Logout</button>
 </div>
 
 
 </div>
-
-<div class="app">
-
-
-<div class="header">
-
-    <div class="header-title">
-        VEA CHAT ADMIN
-    </div>
-
-    <div
-        id="adminNameDisplay"
-        class="admin-name">
-    </div>
-
-</div>
-
 
 <div class="main">
 
-    <!-- CLIENT LIST -->
 
-    <div
-        id="clients"
-        class="clients">
+<!-- CLIENT LIST -->
+
+<aside class="clients">
+
+    <div class="clients-title">
+        <span>CLIENTS</span>
+        <span class="client-count" id="clientCount">0</span>
     </div>
 
+    <div class="client-list" id="clientList"></div>
 
-    <!-- CHAT PANEL -->
+</aside>
 
-    <div
-        id="chatPanel"
-        class="chat-panel">
 
-        <div class="chat-header">
+<!-- CHAT PANEL -->
 
-            <button
-                id="backBtn"
-                class="back-btn">
-                ← BACK
-            </button>
+<section class="chat-panel" id="chatPanel">
 
-            <div
-                id="selectedName"
-                class="selected-name">
+    <div class="chat-header">
+
+        <button class="back-btn" id="backBtn">← BACK</button>
+
+        <div class="chat-header-info">
+
+            <div class="chat-header-name" id="chatClientName">
                 Select a client
             </div>
 
-            <button
-                id="deleteChatBtn"
-                class="delete-chat hidden">
-                DELETE CHAT
-            </button>
-
-        </div>
-
-
-        <div
-            id="chat"
-            class="chat">
-
-            <div class="empty">
-                Select a client to view messages.
+            <div class="chat-header-status" id="chatClientStatus">
+                No client selected
             </div>
 
         </div>
 
+        <button class="delete-btn" id="deleteBtn">
+            DELETE CHAT
+        </button>
 
-        <div class="input-area">
+    </div>
 
-            <input
-                id="messageInput"
-                type="text"
-                placeholder="Type your message..."
-                autocomplete="off"
-                disabled
-            >
 
-            <label class="file-btn">
+    <div class="messages" id="messages">
 
-                📷
-
-                <input
-                    id="imageInput"
-                    type="file"
-                    accept="image/*"
-                >
-
-            </label>
-
-            <button
-                id="sendBtn"
-                class="send-btn"
-                disabled>
-                ➤
-            </button>
-
+        <div class="empty-chat" id="emptyChat">
+            Select a client to view the conversation.
         </div>
 
     </div>
+
+
+    <div class="chat-input-area">
+
+        <input
+            type="file"
+            id="fileInput"
+            class="file-input"
+            accept="image/*"
+        >
+
+        <button
+            class="file-btn"
+            id="fileBtn"
+            title="Send Photo"
+        >
+            📷
+        </button>
+
+        <textarea
+            id="messageInput"
+            class="message-input"
+            placeholder="Type your message..."
+            rows="1"
+        ></textarea>
+
+        <button
+            class="send-btn"
+            id="sendBtn"
+        >
+            SEND
+        </button>
+
+    </div>
+
+    <div class="upload-status" id="uploadStatus">
+        Uploading photo...
+    </div>
+
+</section>
+
+
+</div>
+
+<!-- LOGIN -->
+
+<div class="login-overlay" id="loginOverlay">
+
+
+<div class="login-box">
+
+    <h2>VEA Admin Chat</h2>
+
+    <p>
+        Enter your admin name to continue.
+    </p>
+
+    <input
+        type="text"
+        id="adminNameInput"
+        class="login-input"
+        placeholder="Admin name"
+        autocomplete="off"
+    >
+
+    <button
+        id="loginBtn"
+        class="login-submit"
+    >
+        ENTER CHAT
+    </button>
 
 </div>
 
@@ -580,9 +806,7 @@ html,body{
 
 <script type="module">
 
-import {
-    initializeApp
-} from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
 
 import {
     getDatabase,
@@ -592,117 +816,166 @@ import {
     push,
     set,
     remove
-} from "https://www.gstatic.com/firebasejs/12.3.0/firebase-database.js";
+} from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
 
 import {
     getStorage,
     ref as storageRef,
     uploadBytes,
     getDownloadURL
-} from "https://www.gstatic.com/firebasejs/12.3.0/firebase-storage.js";
+} from "https://www.gstatic.com/firebasejs/11.0.2/firebase-storage.js";
 
+
+/* =========================
+   FIREBASE
+========================= */
 
 const firebaseConfig = {
-
-    apiKey:
-        "AIzaSyAA84vFwWq2oh-7dyiWL6NnKx7Pz-3tGHY",
-
-    authDomain:
-        "vea-chat.firebaseapp.com",
-
-    projectId:
-        "vea-chat",
-
-    storageBucket:
-        "vea-chat.firebasestorage.app",
-
-    messagingSenderId:
-        "955537420473",
-
-    appId:
-        "1:955537420473:web:d2f4919127ce947dce6b68",
-
-    measurementId:
-        "G-VGJ8Q608NV",
-
-    databaseURL:
-        "https://vea-chat-default-rtdb.firebaseio.com/"
-
+    apiKey: "AIzaSyAA84vFwWq2oh-7dyiWL6NnKx7Pz-3tGHY",
+    authDomain: "vea-chat.firebaseapp.com",
+    projectId: "vea-chat",
+    storageBucket: "vea-chat.firebasestorage.app",
+    messagingSenderId: "955537420473",
+    appId: "1:955537420473:web:d2f4919127ce947dce6b68",
+    measurementId: "G-VGJ8Q608NV",
+    databaseURL: "https://vea-chat-default-rtdb.firebaseio.com/"
 };
 
+const app = initializeApp(firebaseConfig);
 
-const app =
-    initializeApp(firebaseConfig);
-
-const db =
-    getDatabase(app);
-
-const storage =
-    getStorage(app);
+const db = getDatabase(app);
+const storage = getStorage(app);
 
 
-let adminName =
-    localStorage.getItem("veaAdminName") || "";
+/* =========================
+   ELEMENTS
+========================= */
+
+const loginOverlay = document.getElementById("loginOverlay");
+const adminNameInput = document.getElementById("adminNameInput");
+const loginBtn = document.getElementById("loginBtn");
+const adminNameDisplay = document.getElementById("adminNameDisplay");
+const logoutBtn = document.getElementById("logoutBtn");
+
+const clientList = document.getElementById("clientList");
+const clientCount = document.getElementById("clientCount");
+
+const chatPanel = document.getElementById("chatPanel");
+const backBtn = document.getElementById("backBtn");
+
+const chatClientName = document.getElementById("chatClientName");
+const chatClientStatus = document.getElementById("chatClientStatus");
+
+const messagesBox = document.getElementById("messages");
+const emptyChat = document.getElementById("emptyChat");
+
+const messageInput = document.getElementById("messageInput");
+const sendBtn = document.getElementById("sendBtn");
+
+const fileInput = document.getElementById("fileInput");
+const fileBtn = document.getElementById("fileBtn");
+
+const deleteBtn = document.getElementById("deleteBtn");
+const uploadStatus = document.getElementById("uploadStatus");
+
+
+/* =========================
+   STATE
+========================= */
+
+let adminName = localStorage.getItem("veaAdminName") || "";
 
 let selectedClientId = null;
+let selectedClientData = null;
 
-let selectedClientName = "";
+const messageListeners = {};
+const displayedMessages = new Set();
 
-let currentMessages = {};
-
-let unread = {};
-
-let messageListeners = {};
-
-let initializedClients = {};
+let allChats = {};
 
 
-const login =
-    document.getElementById("login");
+/* =========================
+   LOGIN
+========================= */
 
-const adminNameInput =
-    document.getElementById("adminNameInput");
+function updateLogin(){
 
-const loginBtn =
-    document.getElementById("loginBtn");
+    if(adminName){
 
-const adminNameDisplay =
-    document.getElementById("adminNameDisplay");
+        adminNameDisplay.textContent = adminName;
+        loginOverlay.style.display = "none";
 
-const clients =
-    document.getElementById("clients");
+    }else{
 
-const chatPanel =
-    document.getElementById("chatPanel");
+        loginOverlay.style.display = "flex";
+        adminNameInput.focus();
 
-const chat =
-    document.getElementById("chat");
+    }
 
-const selectedName =
-    document.getElementById("selectedName");
+}
 
-const deleteChatBtn =
-    document.getElementById("deleteChatBtn");
-
-const messageInput =
-    document.getElementById("messageInput");
-
-const sendBtn =
-    document.getElementById("sendBtn");
-
-const imageInput =
-    document.getElementById("imageInput");
-
-const progress =
-    document.getElementById("progress");
-
-const backBtn =
-    document.getElementById("backBtn");
+updateLogin();
 
 
-/* =========================================
-   MOBILE MODE
-========================================= */
+loginBtn.addEventListener("click", login);
+
+
+adminNameInput.addEventListener("keydown", function(e){
+
+    if(e.key === "Enter"){
+        login();
+    }
+
+});
+
+
+function login(){
+
+    const name = adminNameInput.value.trim();
+
+    if(!name){
+
+        alert("Please enter your admin name.");
+        return;
+
+    }
+
+    adminName = name;
+
+    localStorage.setItem("veaAdminName", adminName);
+
+    updateLogin();
+
+}
+
+
+/* =========================
+   LOGOUT
+========================= */
+
+logoutBtn.addEventListener("click", function(){
+
+    if(!confirm("Logout admin?")){
+        return;
+    }
+
+    localStorage.removeItem("veaAdminName");
+
+    adminName = "";
+
+    selectedClientId = null;
+    selectedClientData = null;
+
+    closeMobileChat();
+
+    updateLogin();
+
+});
+
+
+/* =========================
+   MOBILE
+========================= */
 
 function isMobile(){
 
@@ -713,783 +986,444 @@ function isMobile(){
 
 function openMobileChat(){
 
-    if(!isMobile()) return;
+    if(!isMobile()){
+        return;
+    }
 
-    chatPanel.classList.add(
-        "mobile-open"
-    );
+    chatPanel.classList.add("mobile-open");
 
 }
 
 
 function closeMobileChat(){
 
-    if(!isMobile()) return;
-
-    chatPanel.classList.remove(
-        "mobile-open"
-    );
-
-}
-
-
-backBtn.addEventListener(
-    "click",
-    closeMobileChat
-);
-
-
-window.addEventListener(
-    "resize",
-    ()=>{
-
-        if(!isMobile()){
-
-            chatPanel.classList.remove(
-                "mobile-open"
-            );
-
-        }
-
-    }
-);
-
-
-/* =========================================
-   LOGIN
-========================================= */
-
-function enterAdmin(){
-
-    const name =
-        adminNameInput.value.trim();
-
-    if(!name){
-
-        alert(
-            "Please enter admin name."
-        );
-
+    if(!isMobile()){
         return;
     }
 
-    adminName = name;
-
-    localStorage.setItem(
-        "veaAdminName",
-        adminName
-    );
-
-    adminNameDisplay.textContent =
-        "Admin: " + adminName;
-
-    login.classList.add(
-        "hidden"
-    );
+    chatPanel.classList.remove("mobile-open");
 
 }
 
 
-loginBtn.addEventListener(
-    "click",
-    enterAdmin
-);
+backBtn.addEventListener("click", function(){
+
+    closeMobileChat();
+
+});
 
 
-adminNameInput.addEventListener(
-    "keydown",
-    e=>{
+window.addEventListener("resize", function(){
 
-        if(e.key === "Enter"){
+    if(!isMobile()){
 
-            enterAdmin();
-
-        }
+        chatPanel.classList.remove("mobile-open");
 
     }
-);
+
+});
 
 
-if(adminName){
+/* =========================
+   LOAD CLIENTS
+========================= */
 
-    adminNameDisplay.textContent =
-        "Admin: " + adminName;
+const chatsRef = ref(db, "chats");
 
-    login.classList.add(
-        "hidden"
-    );
+onValue(chatsRef, function(snapshot){
 
-}else{
+    allChats = snapshot.val() || {};
 
-    login.classList.remove(
-        "hidden"
-    );
+    renderClients();
 
-}
+});
 
 
-/* =========================================
-   TIME
-========================================= */
+function renderClients(){
 
-function formatTime(timestamp){
+    clientList.innerHTML = "";
 
-    if(!timestamp) return "";
+    const ids = Object.keys(allChats);
 
-    return new Date(
-        timestamp
-    ).toLocaleTimeString(
-        [],
-        {
-            hour:"2-digit",
-            minute:"2-digit"
-        }
-    );
+    clientCount.textContent = ids.length;
 
-}
+    if(ids.length === 0){
 
+        clientList.innerHTML = `
+            <div style="
+                padding:25px;
+                text-align:center;
+                color:#94a3b8;
+                font-size:13px;
+            ">
+                No clients yet.
+            </div>
+        `;
 
-/* =========================================
-   DISPLAY MESSAGE
-========================================= */
-
-function displayMessage(
-    message,
-    messageId
-){
-
-    const wrapper =
-        document.createElement("div");
-
-    wrapper.className =
-        "message " +
-        (
-            message.sender === "admin"
-            ? "admin"
-            : message.sender === "bot"
-            ? "bot"
-            : "client"
-        );
-
-
-    const bubble =
-        document.createElement("div");
-
-    bubble.className =
-        "bubble";
-
-
-    if(
-        message.sender ===
-        "admin"
-    ){
-
-        const sender =
-            document.createElement(
-                "div"
-            );
-
-        sender.className =
-            "sender";
-
-        sender.textContent =
-            "Admin (" +
-            (
-                message.adminName ||
-                adminName
-            ) +
-            ")";
-
-        bubble.appendChild(
-            sender
-        );
-
-    }else if(
-        message.sender ===
-        "bot"
-    ){
-
-        const sender =
-            document.createElement(
-                "div"
-            );
-
-        sender.className =
-            "sender";
-
-        sender.textContent =
-            "VEA";
-
-        bubble.appendChild(
-            sender
-        );
-
-    }else{
-
-        const sender =
-            document.createElement(
-                "div"
-            );
-
-        sender.className =
-            "sender";
-
-        sender.textContent =
-            message.clientName ||
-            selectedClientName;
-
-        bubble.appendChild(
-            sender
-        );
+        return;
 
     }
 
 
-    if(
-        message.type ===
-        "image"
-    ){
+    ids.sort(function(a,b){
 
-        const img =
-            document.createElement(
-                "img"
-            );
+        const ta = Number(allChats[a]?.lastMessageTime || 0);
+        const tb = Number(allChats[b]?.lastMessageTime || 0);
 
-        img.className =
-            "chat-image";
+        return tb - ta;
+
+    });
 
 
-        if(message.imageUrl){
+    ids.forEach(function(clientId){
 
-            img.src =
-                message.imageUrl;
+        const client = allChats[clientId] || {};
 
-            img.onclick =
-                ()=>{
+        const item = document.createElement("div");
 
-                    window.open(
-                        message.imageUrl,
-                        "_blank"
-                    );
+        item.className = "client-item";
 
-                };
+        if(clientId === selectedClientId){
 
-            bubble.appendChild(
-                img
-            );
-
-        }else{
-
-            const unavailable =
-                document.createElement(
-                    "div"
-                );
-
-            unavailable.textContent =
-                "📷 Photo received by client";
-
-            bubble.appendChild(
-                unavailable
-            );
+            item.classList.add("active");
 
         }
 
-    }else{
 
-        const text =
-            document.createElement(
-                "div"
-            );
+        const messages = client.messages || {};
 
-        text.textContent =
-            message.text || "";
+        let messageArray = Object.values(messages);
 
-        bubble.appendChild(
-            text
-        );
+        messageArray.sort(function(a,b){
 
-    }
+            return Number(a.timestamp || 0) -
+                   Number(b.timestamp || 0);
+
+        });
 
 
-    const time =
-        document.createElement(
-            "div"
-        );
-
-    time.className =
-        "time";
-
-    time.textContent =
-        formatTime(
-            message.timestamp
-        );
-
-    bubble.appendChild(
-        time
-    );
+        const lastMessage =
+            messageArray[messageArray.length - 1];
 
 
-    wrapper.appendChild(
-        bubble
-    );
+        let preview = "No messages";
 
-    chat.appendChild(
-        wrapper
-    );
+        if(lastMessage){
+
+            if(lastMessage.type === "image"){
+
+                preview = "📷 Photo";
+
+            }else{
+
+                preview = lastMessage.text || "Message";
+
+            }
+
+        }
 
 
-    chat.scrollTop =
-        chat.scrollHeight;
+        const unreadCount =
+            Number(client.unreadForAdmin || 0);
+
+
+        const online =
+            client.online === true;
+
+
+        item.innerHTML = `
+
+            <div class="client-name-row">
+
+                <span class="status-dot ${online ? "online" : "offline"}"></span>
+
+                <span class="client-name">
+                    ${escapeHTML(client.name || "Unknown Client")}
+                </span>
+
+            </div>
+
+            <div class="client-preview">
+                ${escapeHTML(preview)}
+            </div>
+
+            ${
+                unreadCount > 0
+                ?
+                `<div class="unread">${unreadCount > 99 ? "99+" : unreadCount}</div>`
+                :
+                ""
+            }
+
+        `;
+
+
+        item.addEventListener("click", function(){
+
+            selectClient(clientId);
+
+        });
+
+
+        clientList.appendChild(item);
+
+    });
 
 }
 
 
-/* =========================================
+/* =========================
    SELECT CLIENT
-========================================= */
+========================= */
 
-function selectClient(
-    clientId,
-    clientName
-){
+function selectClient(clientId){
 
-    selectedClientId =
-        clientId;
+    selectedClientId = clientId;
 
-    selectedClientName =
-        clientName;
+    selectedClientData = allChats[clientId] || {};
+
+    chatClientName.textContent =
+        selectedClientData.name || "Unknown Client";
 
 
-    selectedName.textContent =
-        clientName;
+    chatClientStatus.textContent =
+        selectedClientData.online === true
+        ? "Online"
+        : "Offline";
 
 
-    deleteChatBtn.classList.remove(
-        "hidden"
+    messagesBox.innerHTML = "";
+
+    displayedMessages.clear();
+
+
+    const messageValues =
+        Object.entries(selectedClientData.messages || {});
+
+
+    messageValues.sort(function(a,b){
+
+        return Number(a[1].timestamp || 0) -
+               Number(b[1].timestamp || 0);
+
+    });
+
+
+    if(messageValues.length === 0){
+
+        messagesBox.innerHTML = `
+            <div class="empty-chat">
+                No messages yet.
+            </div>
+        `;
+
+    }else{
+
+        messageValues.forEach(function(entry){
+
+            const messageId = entry[0];
+            const message = entry[1];
+
+            displayMessage(messageId, message);
+
+        });
+
+    }
+
+
+    const clientRef =
+        ref(db, "chats/" + clientId);
+
+
+    set(
+        ref(db, "chats/" + clientId + "/unreadForAdmin"),
+        0
     );
 
 
-    messageInput.disabled =
-        false;
+    if(messageListeners[clientId]){
 
-    sendBtn.disabled =
-        false;
+        messageListeners[clientId]();
 
-
-    chat.innerHTML = "";
+    }
 
 
-    unread[clientId] =
-        0;
+    messageListeners[clientId] =
+        onChildAdded(
+            ref(db, "chats/" + clientId + "/messages"),
+            function(snapshot){
+
+                const messageId = snapshot.key;
+                const message = snapshot.val();
+
+                displayMessage(messageId, message);
+
+            }
+        );
 
 
     renderClients();
 
-
-    /*
-     * MOBILE:
-     * Hide client list and show
-     * full-screen chatbox.
-     */
+    scrollMessages();
 
     openMobileChat();
 
-
-    const messagesRef =
-        ref(
-            db,
-            "chats/" +
-            clientId +
-            "/messages"
-        );
-
-
-    /*
-     * Remove old listener
-     * if one exists.
-     */
-
-    if(
-        messageListeners[clientId]
-    ){
-
-        messageListeners[
-            clientId
-        ]();
-
-    }
-
-
-    const unsubscribe =
-        onChildAdded(
-            messagesRef,
-            snapshot=>{
-
-                const message =
-                    snapshot.val();
-
-                const id =
-                    snapshot.key;
-
-
-                if(!message)
-                    return;
-
-
-                currentMessages[id] =
-                    message;
-
-
-                displayMessage(
-                    message,
-                    id
-                );
-
-            }
-        );
-
-
-    messageListeners[
-        clientId
-    ] =
-        unsubscribe;
-
 }
 
 
-/* =========================================
-   CLIENT LIST
-========================================= */
+/* =========================
+   DISPLAY MESSAGE
+========================= */
 
-function renderClients(){
+function displayMessage(messageId, message){
 
-    clients.innerHTML = "";
-
-
-    const clientData =
-        window.veaClients || {};
-
-
-    const entries =
-        Object.entries(
-            clientData
-        );
-
-
-    entries.sort(
-        (a,b)=>
-            (b[1].lastSeen || 0) -
-            (a[1].lastSeen || 0)
-    );
-
-
-    if(
-        entries.length === 0
-    ){
-
-        clients.innerHTML =
-            '<div style="padding:20px;color:#777;">No clients yet.</div>';
-
+    if(!messageId || !message){
         return;
+    }
+
+
+    if(displayedMessages.has(messageId)){
+        return;
+    }
+
+
+    displayedMessages.add(messageId);
+
+
+    if(emptyChat && emptyChat.parentNode){
+
+        emptyChat.remove();
 
     }
 
 
-    entries.forEach(
-        ([id,data])=>{
+    const row = document.createElement("div");
 
-            const item =
-                document.createElement(
-                    "div"
-                );
+    row.className =
+        "message-row " +
+        (message.sender === "admin" ? "admin" : "client");
 
-            item.className =
-                "client-item " +
+
+    const bubble = document.createElement("div");
+
+    bubble.className =
+        "message " +
+        (message.sender === "admin" ? "admin" : "client");
+
+
+    if(message.type === "image" && message.imageUrl){
+
+        bubble.classList.add("image-message");
+
+
+        const img = document.createElement("img");
+
+        img.src = message.imageUrl;
+
+        img.alt = message.fileName || "Photo";
+
+        img.loading = "lazy";
+
+
+        img.onerror = function(){
+
+            bubble.classList.remove("image-message");
+
+            bubble.innerHTML = `
+                <div class="photo-status">
+                    📷 Photo received by client
+                </div>
+            `;
+
+        };
+
+
+        bubble.appendChild(img);
+
+
+        if(message.sender === "admin"){
+
+            const meta = document.createElement("div");
+
+            meta.className = "message-meta";
+
+            meta.textContent =
+                formatTime(message.timestamp) +
                 (
-                    id ===
-                    selectedClientId
-                    ? "active"
+                    message.savedLocally
+                    ? " • Saved on client"
                     : ""
                 );
 
-
-            const name =
-                document.createElement(
-                    "div"
-                );
-
-            name.className =
-                "client-name";
-
-            name.textContent =
-                data.clientName ||
-                "Unknown Client";
-
-
-            const status =
-                document.createElement(
-                    "div"
-                );
-
-            status.className =
-                "client-status";
-
-
-            const isOnline =
-                data.lastSeen &&
-                Date.now() -
-                data.lastSeen <
-                60000;
-
-
-            status.textContent =
-                isOnline
-                ? "● Online"
-                : "○ Offline";
-
-
-            if(isOnline){
-
-                status.classList.add(
-                    "online"
-                );
-
-            }
-
-
-            item.appendChild(
-                name
-            );
-
-            item.appendChild(
-                status
-            );
-
-
-            if(
-                unread[id] > 0
-            ){
-
-                const badge =
-                    document.createElement(
-                        "span"
-                    );
-
-                badge.className =
-                    "unread";
-
-                badge.textContent =
-                    unread[id];
-
-                item.appendChild(
-                    badge
-                );
-
-            }
-
-
-            item.onclick =
-                ()=>{
-
-                    selectClient(
-                        id,
-                        data.clientName ||
-                        "Unknown Client"
-                    );
-
-                };
-
-
-            clients.appendChild(
-                item
-            );
+            bubble.appendChild(meta);
 
         }
-    );
+
+
+    }else{
+
+        bubble.innerHTML =
+            escapeHTML(message.text || "")
+            +
+            `
+            <div class="message-meta">
+                ${
+                    message.sender === "admin"
+                    ? "You"
+                    : (message.clientName || selectedClientData?.name || "Client")
+                }
+                •
+                ${formatTime(message.timestamp)}
+            </div>
+            `;
+
+    }
+
+
+    row.appendChild(bubble);
+
+    messagesBox.appendChild(row);
+
+    scrollMessages();
 
 }
 
 
-/* =========================================
-   WATCH CLIENTS
-========================================= */
-
-const chatsRef =
-    ref(
-        db,
-        "chats"
-    );
-
-
-onValue(
-    chatsRef,
-    snapshot=>{
-
-        const data =
-            snapshot.val() || {};
-
-
-        window.veaClients =
-            data;
-
-
-        Object.entries(
-            data
-        ).forEach(
-            ([clientId,client])=>{
-
-                if(
-                    !client.messages
-                )
-                    return;
-
-
-                if(
-                    !initializedClients[
-                        clientId
-                    ]
-                ){
-
-                    initializedClients[
-                        clientId
-                    ] =
-                        Object.keys(
-                            client.messages
-                        ).length;
-
-                    return;
-
-                }
-
-
-                const count =
-                    Object.keys(
-                        client.messages
-                    ).length;
-
-
-                if(
-                    count >
-                    initializedClients[
-                        clientId
-                    ]
-                ){
-
-                    if(
-                        clientId !==
-                        selectedClientId
-                    ){
-
-                        unread[
-                            clientId
-                        ] =
-                            (
-                                unread[
-                                    clientId
-                                ] || 0
-                            ) +
-                            (
-                                count -
-                                initializedClients[
-                                    clientId
-                                ]
-                            );
-
-                    }
-
-
-                    initializedClients[
-                        clientId
-                    ] =
-                        count;
-
-                }
-
-            }
-        );
-
-
-        renderClients();
-
-
-        /*
-         * Selected chat was deleted.
-         */
-
-        if(
-            selectedClientId &&
-            !data[
-                selectedClientId
-            ]
-        ){
-
-            selectedClientId =
-                null;
-
-            selectedClientName =
-                "";
-
-
-            selectedName.textContent =
-                "Select a client";
-
-
-            deleteChatBtn.classList.add(
-                "hidden"
-            );
-
-
-            messageInput.disabled =
-                true;
-
-            sendBtn.disabled =
-                true;
-
-
-            chat.innerHTML =
-                '<div class="empty">Select a client to view messages.</div>';
-
-
-            /*
-             * On mobile, return to
-             * client list automatically.
-             */
-
-            closeMobileChat();
-
-        }
-
-    }
-);
-
-
-/* =========================================
+/* =========================
    SEND TEXT
-========================================= */
+========================= */
 
-async function sendMessage(){
+sendBtn.addEventListener("click", sendMessage);
 
-    if(
-        !selectedClientId
-    ){
 
-        alert(
-            "Select a client first."
-        );
+messageInput.addEventListener("keydown", function(e){
 
+    if(e.key === "Enter" && !e.shiftKey){
+
+        e.preventDefault();
+
+        sendMessage();
+
+    }
+
+});
+
+
+function sendMessage(){
+
+    if(!selectedClientId){
+
+        alert("Please select a client first.");
         return;
+
     }
 
 
-    const text =
-        messageInput.value.trim();
+    const text = messageInput.value.trim();
 
-
-    if(!text)
+    if(!text){
         return;
-
-
-    messageInput.value = "";
+    }
 
 
     const messageRef =
@@ -1503,344 +1437,332 @@ async function sendMessage(){
         );
 
 
-    const message = {
+    const data = {
 
-        sender:
-            "admin",
+        sender: "admin",
 
-        adminName:
-            adminName,
+        adminName: adminName,
 
         clientName:
-            selectedClientName,
+            selectedClientData?.name || "",
 
-        text:
-            text,
+        type: "text",
 
-        type:
-            "text",
+        text: text,
 
-        timestamp:
-            Date.now()
+        timestamp: Date.now()
 
     };
 
 
-    await set(
-        messageRef,
-        message
+    set(messageRef, data);
+
+
+    set(
+        ref(
+            db,
+            "chats/" +
+            selectedClientId +
+            "/lastMessageTime"
+        ),
+        Date.now()
+    );
+
+
+    messageInput.value = "";
+
+}
+
+
+/* =========================
+   SEND PHOTO
+========================= */
+
+fileBtn.addEventListener("click", function(){
+
+    if(!selectedClientId){
+
+        alert("Please select a client first.");
+        return;
+
+    }
+
+    fileInput.click();
+
+});
+
+
+fileInput.addEventListener("change", async function(){
+
+    const file = fileInput.files[0];
+
+    if(!file){
+        return;
+    }
+
+
+    if(!selectedClientId){
+
+        alert("Please select a client first.");
+
+        fileInput.value = "";
+
+        return;
+
+    }
+
+
+    if(!file.type.startsWith("image/")){
+
+        alert("Please select an image file.");
+
+        fileInput.value = "";
+
+        return;
+
+    }
+
+
+    try{
+
+        uploadStatus.style.display = "block";
+        uploadStatus.textContent = "Uploading photo...";
+
+
+        const safeName =
+            file.name
+                .replace(/[^a-zA-Z0-9._-]/g,"_");
+
+
+        const path =
+            "chat-images/" +
+            selectedClientId +
+            "/" +
+            Date.now() +
+            "_" +
+            safeName;
+
+
+        const imageRef =
+            storageRef(storage, path);
+
+
+        await uploadBytes(imageRef, file);
+
+
+        uploadStatus.textContent =
+            "Getting photo URL...";
+
+
+        const imageUrl =
+            await getDownloadURL(imageRef);
+
+
+        const messageRef =
+            push(
+                ref(
+                    db,
+                    "chats/" +
+                    selectedClientId +
+                    "/messages"
+                )
+            );
+
+
+        const data = {
+
+            sender: "admin",
+
+            adminName: adminName,
+
+            clientName:
+                selectedClientData?.name || "",
+
+            type: "image",
+
+            imageUrl: imageUrl,
+
+            storagePath: path,
+
+            fileName: file.name,
+
+            timestamp: Date.now(),
+
+            received: false,
+
+            savedLocally: false
+
+        };
+
+
+        await set(messageRef, data);
+
+
+        await set(
+            ref(
+                db,
+                "chats/" +
+                selectedClientId +
+                "/lastMessageTime"
+            ),
+            Date.now()
+        );
+
+
+        uploadStatus.textContent =
+            "Photo sent successfully.";
+
+
+        setTimeout(function(){
+
+            uploadStatus.style.display = "none";
+
+        },1500);
+
+
+    }catch(error){
+
+        console.error(error);
+
+        uploadStatus.textContent =
+            "Upload failed: " + error.message;
+
+        setTimeout(function(){
+
+            uploadStatus.style.display = "none";
+
+        },3000);
+
+    }
+
+
+    fileInput.value = "";
+
+});
+
+
+/* =========================
+   DELETE CHAT
+========================= */
+
+deleteBtn.addEventListener("click", async function(){
+
+    if(!selectedClientId){
+
+        alert("Please select a client first.");
+        return;
+
+    }
+
+
+    const clientName =
+        selectedClientData?.name || "this client";
+
+
+    if(!confirm(
+        "Delete the entire chat with " +
+        clientName +
+        "?"
+    )){
+
+        return;
+
+    }
+
+
+    try{
+
+        await remove(
+            ref(
+                db,
+                "chats/" +
+                selectedClientId
+            )
+        );
+
+
+        selectedClientId = null;
+
+        selectedClientData = null;
+
+        messagesBox.innerHTML = `
+            <div class="empty-chat">
+                Select a client to view the conversation.
+            </div>
+        `;
+
+        chatClientName.textContent =
+            "Select a client";
+
+        chatClientStatus.textContent =
+            "No client selected";
+
+        displayedMessages.clear();
+
+        closeMobileChat();
+
+        renderClients();
+
+    }catch(error){
+
+        console.error(error);
+
+        alert(
+            "Unable to delete chat: " +
+            error.message
+        );
+
+    }
+
+});
+
+
+/* =========================
+   HELPERS
+========================= */
+
+function scrollMessages(){
+
+    requestAnimationFrame(function(){
+
+        messagesBox.scrollTop =
+            messagesBox.scrollHeight;
+
+    });
+
+}
+
+
+function formatTime(timestamp){
+
+    if(!timestamp){
+        return "";
+    }
+
+
+    return new Date(timestamp).toLocaleString(
+        "en-PH",
+        {
+            month:"short",
+            day:"numeric",
+            hour:"numeric",
+            minute:"2-digit"
+        }
     );
 
 }
 
 
-sendBtn.addEventListener(
-    "click",
-    sendMessage
-);
-
-
-messageInput.addEventListener(
-    "keydown",
-    e=>{
-
-        if(
-            e.key === "Enter"
-        ){
-
-            e.preventDefault();
-
-            sendMessage();
-
-        }
-
-    }
-);
-
-
-/* =========================================
-   SEND IMAGE
-========================================= */
-
-imageInput.addEventListener(
-    "change",
-    async function(){
-
-        const file =
-            this.files[0];
-
-
-        if(!file)
-            return;
-
-
-        if(
-            !selectedClientId
-        ){
-
-            alert(
-                "Select a client first."
-            );
-
-            this.value = "";
-
-            return;
-
-        }
-
-
-        if(
-            !file.type.startsWith(
-                "image/"
-            )
-        ){
-
-            alert(
-                "Please select an image."
-            );
-
-            this.value = "";
-
-            return;
-
-        }
-
-
-        try{
-
-            progress.style.width =
-                "20%";
-
-
-            const safeName =
-                file.name.replace(
-                    /[^a-zA-Z0-9._-]/g,
-                    "_"
-                );
-
-
-            const path =
-                "chat-images/" +
-                selectedClientId +
-                "/" +
-                Date.now() +
-                "_" +
-                safeName;
-
-
-            const fileRef =
-                storageRef(
-                    storage,
-                    path
-                );
-
-
-            progress.style.width =
-                "40%";
-
-
-            await uploadBytes(
-                fileRef,
-                file,
-                {
-                    contentType:
-                        file.type
-                }
-            );
-
-
-            progress.style.width =
-                "70%";
-
-
-            const imageUrl =
-                await getDownloadURL(
-                    fileRef
-                );
-
-
-            const messageRef =
-                push(
-                    ref(
-                        db,
-                        "chats/" +
-                        selectedClientId +
-                        "/messages"
-                    )
-                );
-
-
-            const message = {
-
-                sender:
-                    "admin",
-
-                adminName:
-                    adminName,
-
-                clientName:
-                    selectedClientName,
-
-                type:
-                    "image",
-
-                imageUrl:
-                    imageUrl,
-
-                storagePath:
-                    path,
-
-                fileName:
-                    file.name,
-
-                timestamp:
-                    Date.now(),
-
-                received:
-                    false,
-
-                savedLocally:
-                    false
-
-            };
-
-
-            await set(
-                messageRef,
-                message
-            );
-
-
-            progress.style.width =
-                "100%";
-
-
-            setTimeout(
-                ()=>{
-
-                    progress.style.width =
-                        "0%";
-
-                },
-                500
-            );
-
-
-        }catch(error){
-
-            console.error(
-                error
-            );
-
-
-            progress.style.width =
-                "0%";
-
-
-            alert(
-                "Failed to send photo:\n" +
-                error.message
-            );
-
-        }
-
-
-        this.value = "";
-
-    }
-);
-
-
-/* =========================================
-   DELETE CHAT
-========================================= */
-
-deleteChatBtn.addEventListener(
-    "click",
-    async()=>{
-
-        if(
-            !selectedClientId
-        )
-            return;
-
-
-        const confirmDelete =
-            confirm(
-                "Delete the entire chat with " +
-                selectedClientName +
-                "?"
-            );
-
-
-        if(
-            !confirmDelete
-        )
-            return;
-
-
-        try{
-
-            await remove(
-                ref(
-                    db,
-                    "chats/" +
-                    selectedClientId
-                )
-            );
-
-
-            selectedClientId =
-                null;
-
-            selectedClientName =
-                "";
-
-
-            selectedName.textContent =
-                "Select a client";
-
-
-            deleteChatBtn.classList.add(
-                "hidden"
-            );
-
-
-            messageInput.disabled =
-                true;
-
-            sendBtn.disabled =
-                true;
-
-
-            chat.innerHTML =
-                '<div class="empty">Select a client to view messages.</div>';
-
-
-            /*
-             * Mobile returns to
-             * client list.
-             */
-
-            closeMobileChat();
-
-
-        }catch(error){
-
-            console.error(
-                error
-            );
-
-
-            alert(
-                "Unable to delete chat:\n" +
-                error.message
-            );
-
-        }
-
-    }
-);
+function escapeHTML(value){
+
+    return String(value ?? "")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+
+}
 
 </script>
 
