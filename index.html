@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>VEA Chat Admin</title>
 
 <style>
@@ -58,6 +58,7 @@ html,body{
 
 .clients{
     width:300px;
+    min-width:300px;
     background:white;
     border-right:1px solid #ddd;
     overflow-y:auto;
@@ -67,6 +68,7 @@ html,body{
     padding:14px;
     border-bottom:1px solid #eee;
     cursor:pointer;
+    position:relative;
 }
 
 .client-item:hover{
@@ -80,6 +82,7 @@ html,body{
 .client-name{
     font-weight:bold;
     color:#222;
+    padding-right:30px;
 }
 
 .client-status{
@@ -93,11 +96,14 @@ html,body{
 }
 
 .unread{
-    float:right;
+    position:absolute;
+    right:12px;
+    top:14px;
     background:#d71920;
     color:white;
     min-width:20px;
     height:20px;
+    padding:0 5px;
     border-radius:10px;
     text-align:center;
     line-height:20px;
@@ -121,8 +127,24 @@ html,body{
     align-items:center;
 }
 
+.back-btn{
+    display:none;
+    border:0;
+    background:#126b35;
+    color:white;
+    height:36px;
+    padding:0 12px;
+    border-radius:7px;
+    margin-right:10px;
+    font-size:14px;
+    font-weight:bold;
+}
+
 .selected-name{
     font-weight:bold;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
 }
 
 .delete-chat{
@@ -133,6 +155,7 @@ html,body{
     padding:9px 13px;
     border-radius:7px;
     cursor:pointer;
+    white-space:nowrap;
 }
 
 .chat{
@@ -223,6 +246,7 @@ html,body{
 .file-btn{
     width:48px;
     height:48px;
+    min-width:48px;
     border-radius:50%;
     background:#126b35;
     color:white;
@@ -240,6 +264,7 @@ html,body{
 .send-btn{
     width:48px;
     height:48px;
+    min-width:48px;
     border:0;
     border-radius:50%;
     background:#126b35;
@@ -290,11 +315,12 @@ html,body{
 }
 
 .empty{
-    flex:1;
+    height:100%;
     display:flex;
     justify-content:center;
     align-items:center;
     color:#777;
+    text-align:center;
 }
 
 .hidden{
@@ -311,30 +337,111 @@ html,body{
     z-index:200;
 }
 
+
+/* =========================================
+   MOBILE CHAT MODE
+========================================= */
+
 @media(max-width:700px){
 
+    .header{
+        padding:0 12px;
+    }
+
+    .header-title{
+        font-size:17px;
+    }
+
+    .admin-name{
+        font-size:11px;
+    }
+
+    .main{
+        position:relative;
+    }
+
     .clients{
-        width:220px;
+        width:100%;
+        min-width:100%;
+        border-right:0;
+    }
+
+    .chat-panel{
+        position:absolute;
+        inset:0;
+        width:100%;
+        height:100%;
+        background:#f5f7f8;
+        z-index:10;
+        display:none;
+    }
+
+    .chat-panel.mobile-open{
+        display:flex;
+    }
+
+    .back-btn{
+        display:block;
+    }
+
+    .chat-header{
+        padding:0 8px;
+    }
+
+    .selected-name{
+        flex:1;
+        min-width:0;
+        font-size:15px;
+    }
+
+    .delete-chat{
+        padding:8px 9px;
+        font-size:11px;
+    }
+
+    .chat{
+        padding:10px;
     }
 
     .bubble{
         max-width:88%;
     }
 
+    .input-area{
+        min-height:65px;
+        padding:7px;
+    }
+
+    .input-area input[type=text]{
+        min-width:0;
+        font-size:14px;
+    }
+
 }
 
-@media(max-width:500px){
 
-    .clients{
-        width:150px;
-    }
+/* =========================================
+   SMALL MOBILE
+========================================= */
 
-    .client-item{
-        padding:10px;
-    }
+@media(max-width:400px){
 
     .header-title{
-        font-size:16px;
+        font-size:15px;
+    }
+
+    .admin-name{
+        font-size:10px;
+    }
+
+    .delete-chat{
+        font-size:10px;
+        padding:7px;
+    }
+
+    .back-btn{
+        padding:0 9px;
+        font-size:12px;
     }
 
 }
@@ -349,40 +456,89 @@ html,body{
 <div id="login" class="login">
     <div class="login-box">
         <h2>VEA ADMIN CHAT</h2>
-        <input id="adminNameInput" type="text" maxlength="50" placeholder="Enter admin name">
-        <button id="loginBtn">ENTER CHAT</button>
-    </div>
+
+```
+    <input
+        id="adminNameInput"
+        type="text"
+        maxlength="50"
+        placeholder="Enter admin name"
+    >
+
+    <button id="loginBtn">
+        ENTER CHAT
+    </button>
+</div>
+```
+
 </div>
 
 <div class="app">
 
-
+```
 <div class="header">
-    <div class="header-title">VEA CHAT ADMIN</div>
-    <div id="adminNameDisplay" class="admin-name"></div>
+
+    <div class="header-title">
+        VEA CHAT ADMIN
+    </div>
+
+    <div
+        id="adminNameDisplay"
+        class="admin-name">
+    </div>
+
 </div>
+
 
 <div class="main">
 
-    <div id="clients" class="clients"></div>
+    <!-- CLIENT LIST -->
 
-    <div class="chat-panel">
+    <div
+        id="clients"
+        class="clients">
+    </div>
+
+
+    <!-- CHAT PANEL -->
+
+    <div
+        id="chatPanel"
+        class="chat-panel">
 
         <div class="chat-header">
-            <div id="selectedName" class="selected-name">
+
+            <button
+                id="backBtn"
+                class="back-btn">
+                ← BACK
+            </button>
+
+            <div
+                id="selectedName"
+                class="selected-name">
                 Select a client
             </div>
 
-            <button id="deleteChatBtn" class="delete-chat hidden">
+            <button
+                id="deleteChatBtn"
+                class="delete-chat hidden">
                 DELETE CHAT
             </button>
+
         </div>
 
-        <div id="chat" class="chat">
+
+        <div
+            id="chat"
+            class="chat">
+
             <div class="empty">
                 Select a client to view messages.
             </div>
+
         </div>
+
 
         <div class="input-area">
 
@@ -395,11 +551,21 @@ html,body{
             >
 
             <label class="file-btn">
+
                 📷
-                <input id="imageInput" type="file" accept="image/*">
+
+                <input
+                    id="imageInput"
+                    type="file"
+                    accept="image/*"
+                >
+
             </label>
 
-            <button id="sendBtn" class="send-btn" disabled>
+            <button
+                id="sendBtn"
+                class="send-btn"
+                disabled>
                 ➤
             </button>
 
@@ -408,7 +574,7 @@ html,body{
     </div>
 
 </div>
-
+```
 
 </div>
 
@@ -425,7 +591,6 @@ import {
     onChildAdded,
     push,
     set,
-    update,
     remove
 } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-database.js";
 
@@ -438,30 +603,57 @@ import {
 
 
 const firebaseConfig = {
-    apiKey: "AIzaSyAA84vFwW2qoh-7dyiWL6NnKx7Pz-3tGHY",
-    authDomain: "vea-chat.firebaseapp.com",
-    projectId: "vea-chat",
-    storageBucket: "vea-chat.firebasestorage.app",
-    messagingSenderId: "955537420473",
-    appId: "1:955537420473:web:d2f4919127ce947dce6b68",
-    measurementId: "G-VGJ8Q608NV",
-    databaseURL: "https://vea-chat-default-rtdb.firebaseio.com/"
+
+    apiKey:
+        "AIzaSyAA84vFwWq2oh-7dyiWL6NnKx7Pz-3tGHY",
+
+    authDomain:
+        "vea-chat.firebaseapp.com",
+
+    projectId:
+        "vea-chat",
+
+    storageBucket:
+        "vea-chat.firebasestorage.app",
+
+    messagingSenderId:
+        "955537420473",
+
+    appId:
+        "1:955537420473:web:d2f4919127ce947dce6b68",
+
+    measurementId:
+        "G-VGJ8Q608NV",
+
+    databaseURL:
+        "https://vea-chat-default-rtdb.firebaseio.com/"
+
 };
 
-const app = initializeApp(firebaseConfig);
 
-const db = getDatabase(app);
-const storage = getStorage(app);
+const app =
+    initializeApp(firebaseConfig);
+
+const db =
+    getDatabase(app);
+
+const storage =
+    getStorage(app);
 
 
 let adminName =
     localStorage.getItem("veaAdminName") || "";
 
 let selectedClientId = null;
+
 let selectedClientName = "";
+
 let currentMessages = {};
+
 let unread = {};
+
 let messageListeners = {};
+
 let initializedClients = {};
 
 
@@ -479,6 +671,9 @@ const adminNameDisplay =
 
 const clients =
     document.getElementById("clients");
+
+const chatPanel =
+    document.getElementById("chatPanel");
 
 const chat =
     document.getElementById("chat");
@@ -501,10 +696,68 @@ const imageInput =
 const progress =
     document.getElementById("progress");
 
+const backBtn =
+    document.getElementById("backBtn");
 
-/* =========================
+
+/* =========================================
+   MOBILE MODE
+========================================= */
+
+function isMobile(){
+
+    return window.innerWidth <= 700;
+
+}
+
+
+function openMobileChat(){
+
+    if(!isMobile()) return;
+
+    chatPanel.classList.add(
+        "mobile-open"
+    );
+
+}
+
+
+function closeMobileChat(){
+
+    if(!isMobile()) return;
+
+    chatPanel.classList.remove(
+        "mobile-open"
+    );
+
+}
+
+
+backBtn.addEventListener(
+    "click",
+    closeMobileChat
+);
+
+
+window.addEventListener(
+    "resize",
+    ()=>{
+
+        if(!isMobile()){
+
+            chatPanel.classList.remove(
+                "mobile-open"
+            );
+
+        }
+
+    }
+);
+
+
+/* =========================================
    LOGIN
-========================= */
+========================================= */
 
 function enterAdmin(){
 
@@ -513,7 +766,9 @@ function enterAdmin(){
 
     if(!name){
 
-        alert("Please enter admin name.");
+        alert(
+            "Please enter admin name."
+        );
 
         return;
     }
@@ -528,7 +783,9 @@ function enterAdmin(){
     adminNameDisplay.textContent =
         "Admin: " + adminName;
 
-    login.classList.add("hidden");
+    login.classList.add(
+        "hidden"
+    );
 
 }
 
@@ -558,24 +815,30 @@ if(adminName){
     adminNameDisplay.textContent =
         "Admin: " + adminName;
 
-    login.classList.add("hidden");
+    login.classList.add(
+        "hidden"
+    );
 
 }else{
 
-    login.classList.remove("hidden");
+    login.classList.remove(
+        "hidden"
+    );
 
 }
 
 
-/* =========================
+/* =========================================
    TIME
-========================= */
+========================================= */
 
 function formatTime(timestamp){
 
     if(!timestamp) return "";
 
-    return new Date(timestamp).toLocaleTimeString(
+    return new Date(
+        timestamp
+    ).toLocaleTimeString(
         [],
         {
             hour:"2-digit",
@@ -586,11 +849,14 @@ function formatTime(timestamp){
 }
 
 
-/* =========================
+/* =========================================
    DISPLAY MESSAGE
-========================= */
+========================================= */
 
-function displayMessage(message,messageId){
+function displayMessage(
+    message,
+    messageId
+){
 
     const wrapper =
         document.createElement("div");
@@ -605,117 +871,172 @@ function displayMessage(message,messageId){
             : "client"
         );
 
+
     const bubble =
         document.createElement("div");
 
-    bubble.className = "bubble";
+    bubble.className =
+        "bubble";
 
 
-    if(message.sender === "admin"){
+    if(
+        message.sender ===
+        "admin"
+    ){
 
         const sender =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
 
-        sender.className = "sender";
+        sender.className =
+            "sender";
 
         sender.textContent =
             "Admin (" +
-            (message.adminName || adminName) +
+            (
+                message.adminName ||
+                adminName
+            ) +
             ")";
 
-        bubble.appendChild(sender);
+        bubble.appendChild(
+            sender
+        );
 
-    }else if(message.sender === "bot"){
+    }else if(
+        message.sender ===
+        "bot"
+    ){
 
         const sender =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
 
-        sender.className = "sender";
+        sender.className =
+            "sender";
 
-        sender.textContent = "VEA";
+        sender.textContent =
+            "VEA";
 
-        bubble.appendChild(sender);
+        bubble.appendChild(
+            sender
+        );
 
     }else{
 
         const sender =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
 
-        sender.className = "sender";
+        sender.className =
+            "sender";
 
         sender.textContent =
-            message.clientName || selectedClientName;
+            message.clientName ||
+            selectedClientName;
 
-        bubble.appendChild(sender);
+        bubble.appendChild(
+            sender
+        );
 
     }
 
 
-    if(message.type === "image"){
+    if(
+        message.type ===
+        "image"
+    ){
 
         const img =
-            document.createElement("img");
+            document.createElement(
+                "img"
+            );
 
-        img.className = "chat-image";
+        img.className =
+            "chat-image";
 
-        /*
-         * The Firebase Storage URL may disappear after
-         * the client receives the image.
-         *
-         * Therefore admin will show it only while
-         * the Storage URL still exists.
-         */
+
         if(message.imageUrl){
 
-            img.src = message.imageUrl;
+            img.src =
+                message.imageUrl;
 
-            img.onclick = ()=>{
-                window.open(
-                    message.imageUrl,
-                    "_blank"
-                );
-            };
+            img.onclick =
+                ()=>{
 
-            bubble.appendChild(img);
+                    window.open(
+                        message.imageUrl,
+                        "_blank"
+                    );
+
+                };
+
+            bubble.appendChild(
+                img
+            );
 
         }else{
 
             const unavailable =
-                document.createElement("div");
+                document.createElement(
+                    "div"
+                );
 
             unavailable.textContent =
                 "📷 Photo received by client";
 
-            bubble.appendChild(unavailable);
+            bubble.appendChild(
+                unavailable
+            );
 
         }
 
     }else{
 
         const text =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
 
         text.textContent =
             message.text || "";
 
-        bubble.appendChild(text);
+        bubble.appendChild(
+            text
+        );
 
     }
 
 
     const time =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
 
-    time.className = "time";
+    time.className =
+        "time";
 
     time.textContent =
-        formatTime(message.timestamp);
+        formatTime(
+            message.timestamp
+        );
 
-    bubble.appendChild(time);
+    bubble.appendChild(
+        time
+    );
 
-    wrapper.appendChild(bubble);
 
-    chat.appendChild(wrapper);
+    wrapper.appendChild(
+        bubble
+    );
+
+    chat.appendChild(
+        wrapper
+    );
+
 
     chat.scrollTop =
         chat.scrollHeight;
@@ -723,29 +1044,56 @@ function displayMessage(message,messageId){
 }
 
 
-/* =========================
-   LOAD SELECTED CLIENT
-========================= */
+/* =========================================
+   SELECT CLIENT
+========================================= */
 
-function selectClient(clientId,clientName){
+function selectClient(
+    clientId,
+    clientName
+){
 
-    selectedClientId = clientId;
+    selectedClientId =
+        clientId;
 
-    selectedClientName = clientName;
+    selectedClientName =
+        clientName;
+
 
     selectedName.textContent =
         clientName;
 
-    deleteChatBtn.classList.remove("hidden");
 
-    messageInput.disabled = false;
-    sendBtn.disabled = false;
+    deleteChatBtn.classList.remove(
+        "hidden"
+    );
+
+
+    messageInput.disabled =
+        false;
+
+    sendBtn.disabled =
+        false;
+
 
     chat.innerHTML = "";
 
-    unread[clientId] = 0;
+
+    unread[clientId] =
+        0;
+
 
     renderClients();
+
+
+    /*
+     * MOBILE:
+     * Hide client list and show
+     * full-screen chatbox.
+     */
+
+    openMobileChat();
+
 
     const messagesRef =
         ref(
@@ -755,16 +1103,22 @@ function selectClient(clientId,clientName){
             "/messages"
         );
 
-    /*
-     * Remove old listener for this client if one exists.
-     */
-    if(messageListeners[clientId]){
 
-        messageListeners[clientId]();
+    /*
+     * Remove old listener
+     * if one exists.
+     */
+
+    if(
+        messageListeners[clientId]
+    ){
+
+        messageListeners[
+            clientId
+        ]();
 
     }
 
-    let loaded = false;
 
     const unsubscribe =
         onChildAdded(
@@ -777,58 +1131,50 @@ function selectClient(clientId,clientName){
                 const id =
                     snapshot.key;
 
-                if(!message) return;
 
-                if(!loaded){
+                if(!message)
+                    return;
 
-                    currentMessages[id] =
-                        message;
 
-                    displayMessage(
-                        message,
-                        id
-                    );
+                currentMessages[id] =
+                    message;
 
-                }else{
 
-                    currentMessages[id] =
-                        message;
-
-                    displayMessage(
-                        message,
-                        id
-                    );
-
-                }
+                displayMessage(
+                    message,
+                    id
+                );
 
             }
         );
 
-    messageListeners[clientId] =
+
+    messageListeners[
+        clientId
+    ] =
         unsubscribe;
-
-    setTimeout(()=>{
-
-        loaded = true;
-
-    },500);
 
 }
 
 
-/* =========================
+/* =========================================
    CLIENT LIST
-========================= */
+========================================= */
 
 function renderClients(){
 
     clients.innerHTML = "";
 
+
     const clientData =
         window.veaClients || {};
 
+
     const entries =
-        Object.entries(clientData);
+        Object.entries(
+            clientData
+        );
+
 
     entries.sort(
         (a,b)=>
@@ -837,102 +1183,142 @@ function renderClients(){
     );
 
 
-    if(entries.length === 0){
+    if(
+        entries.length === 0
+    ){
 
         clients.innerHTML =
             '<div style="padding:20px;color:#777;">No clients yet.</div>';
 
         return;
+
     }
 
 
-    entries.forEach(([id,data])=>{
+    entries.forEach(
+        ([id,data])=>{
 
-        const item =
-            document.createElement("div");
+            const item =
+                document.createElement(
+                    "div"
+                );
 
-        item.className =
-            "client-item " +
-            (
-                id === selectedClientId
-                ? "active"
-                : ""
+            item.className =
+                "client-item " +
+                (
+                    id ===
+                    selectedClientId
+                    ? "active"
+                    : ""
+                );
+
+
+            const name =
+                document.createElement(
+                    "div"
+                );
+
+            name.className =
+                "client-name";
+
+            name.textContent =
+                data.clientName ||
+                "Unknown Client";
+
+
+            const status =
+                document.createElement(
+                    "div"
+                );
+
+            status.className =
+                "client-status";
+
+
+            const isOnline =
+                data.lastSeen &&
+                Date.now() -
+                data.lastSeen <
+                60000;
+
+
+            status.textContent =
+                isOnline
+                ? "● Online"
+                : "○ Offline";
+
+
+            if(isOnline){
+
+                status.classList.add(
+                    "online"
+                );
+
+            }
+
+
+            item.appendChild(
+                name
             );
 
-        const name =
-            document.createElement("div");
-
-        name.className = "client-name";
-
-        name.textContent =
-            data.clientName || "Unknown Client";
-
-
-        const status =
-            document.createElement("div");
-
-        status.className = "client-status";
-
-
-        const isOnline =
-            data.lastSeen &&
-            Date.now() - data.lastSeen < 60000;
-
-
-        status.textContent =
-            isOnline
-            ? "● Online"
-            : "○ Offline";
-
-        if(isOnline){
-
-            status.classList.add("online");
-
-        }
-
-
-        item.appendChild(name);
-        item.appendChild(status);
-
-
-        if(unread[id] > 0){
-
-            const badge =
-                document.createElement("span");
-
-            badge.className = "unread";
-
-            badge.textContent =
-                unread[id];
-
-            item.appendChild(badge);
-
-        }
-
-
-        item.onclick = ()=>{
-
-            selectClient(
-                id,
-                data.clientName || "Unknown Client"
+            item.appendChild(
+                status
             );
 
-        };
+
+            if(
+                unread[id] > 0
+            ){
+
+                const badge =
+                    document.createElement(
+                        "span"
+                    );
+
+                badge.className =
+                    "unread";
+
+                badge.textContent =
+                    unread[id];
+
+                item.appendChild(
+                    badge
+                );
+
+            }
 
 
-        clients.appendChild(item);
+            item.onclick =
+                ()=>{
 
-    });
+                    selectClient(
+                        id,
+                        data.clientName ||
+                        "Unknown Client"
+                    );
+
+                };
+
+
+            clients.appendChild(
+                item
+            );
+
+        }
+    );
 
 }
 
 
-/* =========================
+/* =========================================
    WATCH CLIENTS
-========================= */
+========================================= */
 
 const chatsRef =
-    ref(db,"chats");
+    ref(
+        db,
+        "chats"
+    );
 
 
 onValue(
@@ -942,34 +1328,51 @@ onValue(
         const data =
             snapshot.val() || {};
 
-        window.veaClients = data;
 
-        /*
-         * Watch new messages for unread counter.
-         */
-        Object.entries(data).forEach(
+        window.veaClients =
+            data;
+
+
+        Object.entries(
+            data
+        ).forEach(
             ([clientId,client])=>{
 
-                if(!client.messages) return;
+                if(
+                    !client.messages
+                )
+                    return;
 
-                if(!initializedClients[clientId]){
 
-                    initializedClients[clientId] =
+                if(
+                    !initializedClients[
+                        clientId
+                    ]
+                ){
+
+                    initializedClients[
+                        clientId
+                    ] =
                         Object.keys(
                             client.messages
                         ).length;
 
                     return;
+
                 }
+
 
                 const count =
                     Object.keys(
                         client.messages
                     ).length;
 
+
                 if(
                     count >
-                    initializedClients[clientId]
+                    initializedClients[
+                        clientId
+                    ]
                 ){
 
                     if(
@@ -977,18 +1380,27 @@ onValue(
                         selectedClientId
                     ){
 
-                        unread[clientId] =
+                        unread[
+                            clientId
+                        ] =
                             (
-                                unread[clientId] || 0
+                                unread[
+                                    clientId
+                                ] || 0
                             ) +
                             (
                                 count -
-                                initializedClients[clientId]
+                                initializedClients[
+                                    clientId
+                                ]
                             );
 
                     }
 
-                    initializedClients[clientId] =
+
+                    initializedClients[
+                        clientId
+                    ] =
                         count;
 
                 }
@@ -999,30 +1411,51 @@ onValue(
 
         renderClients();
 
+
         /*
-         * If selected chat was deleted.
+         * Selected chat was deleted.
          */
+
         if(
             selectedClientId &&
-            !data[selectedClientId]
+            !data[
+                selectedClientId
+            ]
         ){
 
-            selectedClientId = null;
+            selectedClientId =
+                null;
 
-            selectedClientName = "";
+            selectedClientName =
+                "";
+
 
             selectedName.textContent =
                 "Select a client";
+
 
             deleteChatBtn.classList.add(
                 "hidden"
             );
 
-            messageInput.disabled = true;
-            sendBtn.disabled = true;
+
+            messageInput.disabled =
+                true;
+
+            sendBtn.disabled =
+                true;
+
 
             chat.innerHTML =
                 '<div class="empty">Select a client to view messages.</div>';
+
+
+            /*
+             * On mobile, return to
+             * client list automatically.
+             */
+
+            closeMobileChat();
 
         }
 
@@ -1030,25 +1463,34 @@ onValue(
 );
 
 
-/* =========================
+/* =========================================
    SEND TEXT
-========================= */
+========================================= */
 
 async function sendMessage(){
 
-    if(!selectedClientId){
+    if(
+        !selectedClientId
+    ){
 
-        alert("Select a client first.");
+        alert(
+            "Select a client first."
+        );
 
         return;
     }
 
+
     const text =
         messageInput.value.trim();
 
-    if(!text) return;
+
+    if(!text)
+        return;
+
 
     messageInput.value = "";
+
 
     const messageRef =
         push(
@@ -1060,19 +1502,26 @@ async function sendMessage(){
             )
         );
 
+
     const message = {
 
-        sender:"admin",
+        sender:
+            "admin",
 
-        adminName:adminName,
+        adminName:
+            adminName,
 
-        clientName:selectedClientName,
+        clientName:
+            selectedClientName,
 
-        text:text,
+        text:
+            text,
 
-        type:"text",
+        type:
+            "text",
 
-        timestamp:Date.now()
+        timestamp:
+            Date.now()
 
     };
 
@@ -1095,7 +1544,9 @@ messageInput.addEventListener(
     "keydown",
     e=>{
 
-        if(e.key === "Enter"){
+        if(
+            e.key === "Enter"
+        ){
 
             e.preventDefault();
 
@@ -1107,9 +1558,9 @@ messageInput.addEventListener(
 );
 
 
-/* =========================
+/* =========================================
    SEND IMAGE
-========================= */
+========================================= */
 
 imageInput.addEventListener(
     "change",
@@ -1118,36 +1569,51 @@ imageInput.addEventListener(
         const file =
             this.files[0];
 
-        if(!file) return;
 
-        if(!selectedClientId){
+        if(!file)
+            return;
 
-            alert("Select a client first.");
+
+        if(
+            !selectedClientId
+        ){
+
+            alert(
+                "Select a client first."
+            );
 
             this.value = "";
 
             return;
+
         }
 
 
-        if(!file.type.startsWith("image/")){
+        if(
+            !file.type.startsWith(
+                "image/"
+            )
+        ){
 
-            alert("Please select an image.");
+            alert(
+                "Please select an image."
+            );
 
             this.value = "";
 
             return;
+
         }
 
 
         try{
 
-            progress.style.width = "20%";
+            progress.style.width =
+                "20%";
 
 
             const safeName =
-                file.name
-                .replace(
+                file.name.replace(
                     /[^a-zA-Z0-9._-]/g,
                     "_"
                 );
@@ -1169,19 +1635,22 @@ imageInput.addEventListener(
                 );
 
 
-            progress.style.width = "40%";
+            progress.style.width =
+                "40%";
 
 
             await uploadBytes(
                 fileRef,
                 file,
                 {
-                    contentType:file.type
+                    contentType:
+                        file.type
                 }
             );
 
 
-            progress.style.width = "70%";
+            progress.style.width =
+                "70%";
 
 
             const imageUrl =
@@ -1203,25 +1672,35 @@ imageInput.addEventListener(
 
             const message = {
 
-                sender:"admin",
+                sender:
+                    "admin",
 
-                adminName:adminName,
+                adminName:
+                    adminName,
 
-                clientName:selectedClientName,
+                clientName:
+                    selectedClientName,
 
-                type:"image",
+                type:
+                    "image",
 
-                imageUrl:imageUrl,
+                imageUrl:
+                    imageUrl,
 
-                storagePath:path,
+                storagePath:
+                    path,
 
-                fileName:file.name,
+                fileName:
+                    file.name,
 
-                timestamp:Date.now(),
+                timestamp:
+                    Date.now(),
 
-                received:false,
+                received:
+                    false,
 
-                savedLocally:false
+                savedLocally:
+                    false
 
             };
 
@@ -1232,21 +1711,31 @@ imageInput.addEventListener(
             );
 
 
-            progress.style.width = "100%";
+            progress.style.width =
+                "100%";
 
 
-            setTimeout(()=>{
+            setTimeout(
+                ()=>{
 
-                progress.style.width = "0%";
+                    progress.style.width =
+                        "0%";
 
-            },500);
+                },
+                500
+            );
 
 
         }catch(error){
 
-            console.error(error);
+            console.error(
+                error
+            );
 
-            progress.style.width = "0%";
+
+            progress.style.width =
+                "0%";
+
 
             alert(
                 "Failed to send photo:\n" +
@@ -1262,15 +1751,19 @@ imageInput.addEventListener(
 );
 
 
-/* =========================
+/* =========================================
    DELETE CHAT
-========================= */
+========================================= */
 
 deleteChatBtn.addEventListener(
     "click",
     async()=>{
 
-        if(!selectedClientId) return;
+        if(
+            !selectedClientId
+        )
+            return;
+
 
         const confirmDelete =
             confirm(
@@ -1279,7 +1772,11 @@ deleteChatBtn.addEventListener(
                 "?"
             );
 
-        if(!confirmDelete) return;
+
+        if(
+            !confirmDelete
+        )
+            return;
 
 
         try{
@@ -1293,26 +1790,47 @@ deleteChatBtn.addEventListener(
             );
 
 
-            selectedClientId = null;
+            selectedClientId =
+                null;
 
-            selectedClientName = "";
+            selectedClientName =
+                "";
+
 
             selectedName.textContent =
                 "Select a client";
+
 
             deleteChatBtn.classList.add(
                 "hidden"
             );
 
-            messageInput.disabled = true;
-            sendBtn.disabled = true;
+
+            messageInput.disabled =
+                true;
+
+            sendBtn.disabled =
+                true;
+
 
             chat.innerHTML =
                 '<div class="empty">Select a client to view messages.</div>';
 
+
+            /*
+             * Mobile returns to
+             * client list.
+             */
+
+            closeMobileChat();
+
+
         }catch(error){
 
-            console.error(error);
+            console.error(
+                error
+            );
+
 
             alert(
                 "Unable to delete chat:\n" +
